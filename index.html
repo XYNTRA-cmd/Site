@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XYNTRA | Interactive</title>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-main: #e0e0e0;
+            --text-muted: #888888;
+            --accent: #ffffff;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #050505 70%);
+            background-attachment: fixed;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        h1, h2, h3 {
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .metal-text {
+            background: linear-gradient(180deg, #ffffff 0%, #a0a0a0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        .intro-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .orbit-lines {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.5;
+            animation: rotate 20s linear infinite;
+        }
+        
+        .orbit-lines::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            right: 10%;
+            bottom: 10%;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .logo-text {
+            font-size: 5rem;
+            font-weight: 700;
+            letter-spacing: 15px;
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-text::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            animation: shine 2s ease-in-out forwards;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 200%; }
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            letter-spacing: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        header.main-header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            text-align: center;
+        }
+
+        section {
+            padding: 80px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border-color), transparent);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: 4px;
+            transition: all 0.4s ease;
+        }
+
+        .card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        .card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .card p strong {
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .highlight-project {
+            border-left: 2px solid var(--accent);
+            background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+        }
+
+        .accordion-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .accordion-item {
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 4px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header {
+            padding: 20px 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: background 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .accordion-header .icon {
+            font-size: 1.5rem;
+            font-weight: 300;
+            transition: transform 0.4s ease;
+        }
+
+        .accordion-item.active {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .accordion-item.active .icon {
+            transform: rotate(45deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .accordion-content-inner {
+            padding: 0 30px 30px 30px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 10px;
+            padding-top: 20px;
+        }
+
+        .accordion-content-inner p {
+            margin-bottom: 15px;
+        }
+        
+        .accordion-content-inner p:last-child {
+            margin-bottom: 0;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        footer {
+            text-align: center;
+            padding: 50px 0;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .logo-text {
+                font-size: 3rem;
+                letter-spacing: 5px;
+            }
+            .subtitle {
+                font-size: 0.7rem;
+                letter-spacing: 5px;
+            }
+            .orbit-lines {
+                width: 300px;
+                height: 300px;
+            }
+            section {
+                padding: 60px 0;
+            }
+            .section-title {
+                font-size: 1.5rem;
+            }
+            .accordion-header {
+                padding: 15px 20px;
+                font-size: 1rem;
+            }
+            .accordion-content-inner {
+                padding: 0 20px 20px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="intro-screen" id="intro">
+        <div class="orbit-lines"></div>
+        <h1 class="logo-text metal-text">XYNTRA</h1>
+        <p class="subtitle">Interactive</p>
+    </div>
+
+    <header class="main-header" id="main-content">
+        <div class="container">
+            <h1 class="logo-text metal-text reveal active" style="font-size: 4rem;">XYNTRA</h1>
+            <p class="subtitle reveal active" style="letter-spacing: 8px;">Independent Game Studio</p>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <section>
+            <h2 class="section-title reveal">Навигация</h2>
+            <div class="accordion-container reveal">
+                
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>О студии и разработчике</span>
+                        <span class="icon">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-content-inner">
+                            <p><strong>Что такое Xyntra?</strong><br>Xyntra — независимая игровая студия, основанная разработчиком Xyntra. Основное направление деятельности — создание собственных игр различных жанров и направлений. Мы не ограничиваемся одной тематикой и постепенно развиваем новые проекты.</p>
+                            <p><strong>Кто разработчик?</strong><br>Я Xyntra, независимый разработчик. Работаю над проектами самостоятельно, постепенно воплощая свои идеи в жизнь.</p>
+                            <p><strong>Какие проекты разрабатываются?</strong><br>На данный момент основной проект студии: NOCTURNE — атмосферный платформер с пиксельной графикой и мрачным визуальным стилем. Другие проекты будут представлены по мере их разработки.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>Проекты и разработка</span>
+                        <span class="icon">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-content-inner">
+                            <p><strong>Где посмотреть информацию об играх?</strong><br>У каждого проекта будет собственная информация: описание, особенности, этап разработки и новости.</p>
+                            <p><strong>Будут ли новые игры?</strong><br>Да! Xyntra не ограничивается разработкой одной игры. В будущем планируется создание проектов разных жанров и направлений.</p>
+                            <p><strong>Где следить за разработкой?</strong><br>Все новости, скриншоты, тестирования и анонсы публикуются в официальном канале.</p>
+                            <p><strong>Когда выходят игры?</strong><br>Сроки выхода зависят от конкретного проекта. Информация о датах релизов будет публиковаться отдельно.</p>
+                            <p><strong>На каких платформах будут выходить игры?</strong><br>Платформы определяются индивидуально для каждого проекта. Основное направление — Windows Desktop, также рассматриваются другие платформы.</p>
+                            <p><strong>Будут ли игры бесплатными?</strong><br>Вопрос стоимости решается отдельно для каждого проекта.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>Сотрудничество и связь</span>
+                        <span class="icon">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-content-inner">
+                            <p><strong>Можно предложить идею?</strong><br>Конечно! Я открыт к предложениям и готов рассмотреть интересные идеи.</p>
+                            <p><strong>Можно помочь с разработкой?</strong><br>Если вы хотите принять участие в одном из проектов, напишите мне и расскажите, чем можете помочь.</p>
+                            <p><strong>Как связаться с разработчиком?</strong><br>Для предложений, идей и вопросов будет доступен специальный бот обратной связи.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title reveal">Ключевые направления</h2>
+            <div class="grid">
+                <div class="card highlight-project reveal">
+                    <h3>NOCTURNE</h3>
+                    <p>Основной проект студии на данный момент. Атмосферный платформер с пиксельной графикой и мрачным визуальным стилем.</p>
+                </div>
+                <div class="card reveal">
+                    <h3>Платформы</h3>
+                    <p>Основное направление — <strong>Windows Desktop</strong>. Также рассматриваются другие платформы в зависимости от специфики проекта.</p>
+                </div>
+                <div class="card reveal">
+                    <h3>Обратная связь</h3>
+                    <p>Для предложений, идей и вопросов будет доступен специальный бот обратной связи. Мы всегда открыты к диалогу.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 XYNTRA INTERACTIVE. ВСЕ ПРАВА ЗАЩИЩЕНЫ.</p>
+    </footer>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('intro').classList.add('hidden');
+                document.getElementById('main-content').style.opacity = '1';
+            }, 2500);
+        });
+
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const item = header.parentElement;
+                const content = header.nextElementSibling;
+                
+                document.querySelectorAll('.accordion-item').forEach(otherItem => {
+                    if (otherItem !== item && otherItem.classList.contains('active')) {
+                        otherItem.classList.remove('active');
+                        otherItem.querySelector('.accordion-content').style.maxHeight = null;
+                    }
+                });
+
+                item.classList.toggle('active');
+                
+                if (item.classList.contains('active')) {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                } else {
+                    content.style.maxHeight = null;
+                }
+            });
+        });
+
+        const reveals = document.querySelectorAll('.reveal');
+
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            const elementVisible = 100;
+
+            reveals.forEach((reveal) => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('active');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll();
+    </script>
+</body>
+</html>
